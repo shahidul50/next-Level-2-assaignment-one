@@ -43,13 +43,13 @@ interface IUserWithRole extends IUser {
 
 ### TypeScript এ any, unknown এবং never type এর মধ্যে পার্থক্য কি?
 
-TypeScript এ any type হচ্ছে এমন type যার মধ্যে যেকোন টাইপের ডাটা রাখা যায়। এই type ব্যবহার করলে TypeScript আর কোন type চেক করবে না। তখন আমরা যে variable এ any type দিয়ে define করব সেটাতে চাইলে আমারা যেকোন type এর Data রাখতে পারব। যেমন-
+TypeScript এ any type হচ্ছে এমন type যার মধ্যে যেকোন type এর data রাখা যায়। এই type ব্যবহার করলে TypeScript আর কোন type চেক করবে না। তখন আমরা যে variable এ any type দিয়ে define করব সেটাতে চাইলে আমারা যেকোন type এর Data রাখতে পারব। যেমন-
 
 ```ts
 let number1: any = 21;
 number1 = "Hello World";
 
-console.log(number1);
+console.log(number1); // 'Hello World'
 ```
 
 TypeScript এ unknown type হচ্ছে এমন type যার মধ্যে যেকোন type এর ডাটা রাখা যায়। তবে ব্যবহার করার আগে অবশ্যই type চেক করে নিতে হবে কারণ TypeScript Compiler type যাচাই করার জন্য বাধ্য করে থাকে। unknown type, any type এর থেকে বেশি নিরাপদ হয়ে থাকে। যেমনঃ
@@ -68,4 +68,42 @@ TypeScript এ never type হচ্ছে এমন type যা কখনো ক
 function fail(msg: string): never {
   throw new Error(msg); //এখান থেকে কোন return মান যাওয়া সম্ভব না।
 }
+```
+
+### TypeScript এ keyof keyword এর ব্যবহার কি? উদাহারণের মাধ্যমে বুঝিয়ে দাও।
+
+TypeScript-এ keyof হলো একটি type operator যা কোনো object type-এর সকল key এর union type তৈরি করে দেয়।
+এটি মূলত object এর key গুলোকে type হিসেবে ব্যবহার করতে সাহায্য করে থাকে। উদাহারণঃ
+
+```ts
+type RichPeoplesVehicle = {
+  car: string;
+  bike: string;
+  cng: string;
+};
+
+type MyVehicle1 = "bike" | "cng" | "car";
+type MyVehicle2 = keyof RichPeoplesVehicle;
+
+const myVehicle: MyVehicle2 = "bike";
+```
+
+এছাড়া কোন একটা Function এর মধ্যে Object এর key ব্যবহার করার প্রয়োজন হলে সেক্ষেত্রে Object key ভুল না টাইপ করার জন্যও এটা ব্যবহার করা যায়। উদাহারণঃ
+
+```ts
+type User = {
+  id: number;
+  name: string;
+  age: number;
+};
+
+function getUserValue(user: User, key: keyof User) {
+  return user[key];
+}
+
+const user: User = { id: 101, name: "Mr. X", age: 29 };
+
+getUserValue(user, "name");
+getUserValue(user, "age");
+getUserValue(user, "email"); // Error Provide করবে কারণ এই ্নামের কোন key নেই।
 ```
